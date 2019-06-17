@@ -31,10 +31,12 @@ void SerialCommunicator::SetState(States state)
     Serial.print('s');
     Serial.print(state);
     Serial.flush();
+    currentState = state;
 }
 
 States SerialCommunicator::GetState()
 {
+    bool readSomething = false;
     while (Serial.available() > 0)
     {
         if (Serial.read() == 's')
@@ -42,10 +44,13 @@ States SerialCommunicator::GetState()
             readBuffer = Serial.read();
         }
     }
-    Serial.flush();
-    if (readBuffer == (CALM || RESTLESS1 || RESTLESS2 || RESTLESS3 || OUT))
+    if (readSomething)
     {
-        currentState = (States)readBuffer;
+        Serial.flush();
+        if (readBuffer == (CALM || RESTLESS1 || RESTLESS2 || RESTLESS3 || OUT))
+        {
+            currentState = (States)readBuffer;
+        }
     }
     return currentState;
 }
