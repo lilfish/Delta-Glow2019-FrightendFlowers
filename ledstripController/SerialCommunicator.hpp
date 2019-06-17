@@ -5,18 +5,20 @@
 
 class SerialCommunicator : public ICommunicator
 {
-private:
-    States currentState;
-public:
-    SerialCommunicator(int baudrate);
-    States GetState();
-    void SetState(States state);
-    ~SerialCommunicator();
+    private:
+        States currentState;
+    public:
+        SerialCommunicator(int baudrate);
+        States GetState();
+        void SetState(States state);
+        ~SerialCommunicator();
 };
 
 SerialCommunicator::SerialCommunicator(int baudrate)
 {
     Serial.begin(baudrate);
+    Serial1.begin(baudrate);
+
     currentState = UNINITIALIZED;
 }
 
@@ -41,33 +43,25 @@ States SerialCommunicator::GetState()
     char readBuffer;
     String readString;
 
-    while (Serial.available() > 0)
+    while (Serial1.available() > 0)
     {
         delay(3);
-        if (Serial.read() == 's')
+        if (Serial1.read() == 's')
         {
-            readBuffer = Serial.read();
+            readBuffer = Serial1.read();
             readString = readBuffer; 
             readSomething = true;
         }
     }
-    Serial.flush();
+    Serial1.flush();
 
     givenState = readString.toInt();
 
-    // to be removed
-    Serial.print("Given state: ");
-    Serial.println(givenState);
     
-        
-    if (givenState == (CALM || RESTLESS1 || RESTLESS2 || RESTLESS3 || OUT))
+    if (givenState == CALM || givenState == RESTLESS1 || givenState == RESTLESS2 || givenState == RESTLESS3 || givenState == OUT)
     {
         currentState = (States)givenState;
     }
 
-    // to be removed
-    Serial.print("currentState: ");
-    Serial.println(currentState);
-    
     return currentState;
 }

@@ -20,9 +20,10 @@ void setup() {
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
-  States x = sensor->GetState();
-  motor->SetState(x);
-  communicator->SetState(x);
+  // // put your main code here, to run repeatedly:
+  // States x = sensor->GetState();
+  // motor->SetState(x);
+  // communicator->SetState(x);
+  Serial.print("s3");
   delay(1000);
 }
