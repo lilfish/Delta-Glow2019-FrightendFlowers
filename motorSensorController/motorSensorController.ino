@@ -24,4 +24,5 @@ void loop() {
   States x = sensor->GetState();
   motor->SetState(x);
   communicator->SetState(x);
+  delay(1000);
 }

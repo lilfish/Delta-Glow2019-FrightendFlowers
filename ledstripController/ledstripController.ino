@@ -16,7 +16,7 @@ CRGB Leds[STRIP_SIZE];
 
 void setup() {
   // put your setup code here, to run once:
-  communicator = new SerialCommunicator(115200);
+  communicator = new SerialCommunicator(9600);
   FastLED.addLeds<WS2812B, STRIP_PIN, RGB>(Leds, STRIP_SIZE);
   strip = new WS2812Strip(Leds,STRIP_SIZE);
 }
@@ -24,5 +24,7 @@ void setup() {
 void loop() {
   // put your main code here, to run repeatedly:
   States state = communicator->GetState();
+  // Serial.print(state);
   strip->SetState(state);
+  delay(1000);
 }
