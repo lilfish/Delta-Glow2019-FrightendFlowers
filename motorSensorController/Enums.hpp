@@ -1,2 +1,2 @@
 #pragma once
-enum States {calm, restless1, restless2, restless3, out };
+enum States { UNINITIALIZED, CALM, RESTLESS1, RESTLESS2, RESTLESS3, OUT };
