@@ -37,8 +37,6 @@ void SerialCommunicator::SetState(States state)
 
 States SerialCommunicator::GetState()
 {
-    bool readSomething = false;
-
     States givenState;
     char readBuffer;
     String readString;
@@ -49,8 +47,7 @@ States SerialCommunicator::GetState()
         if (Serial1.read() == 's')
         {
             readBuffer = Serial1.read();
-            readString = readBuffer; 
-            readSomething = true;
+            readString = readBuffer;
         }
     }
     Serial1.flush();
