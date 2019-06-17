@@ -1,24 +1,26 @@
-enum States {calm, restless1, restless2, restless3, out };
+#include "Enums.hpp"
+#include "IMotor.hpp"
+#include "IDistanceSensor.hpp"
+#include "ICommunicator.hpp"
+
+IDistanceSensor* sensor;
+IMotor* motor;
+ICommunicator* communicator;
+
 void setup() {
   // put your setup code here, to run once:
+  /*
+  sensor = new UltrasonicDistanceSensor(12,13);
+
+   */
+
 
 }
 
 void loop() {
   // put your main code here, to run repeatedly:
-
-}
-
-void sensorCode() {
-  //
-}
-
-void communicationCode() {
-
-}
-
-void motorCode(States state) {
-  //state 0 = calm
-  //state 1 to 3 = restless (1 - 3)
-  //state 4 = out
+  // 
+  States x = sensor->GetState();
+  motor->SetState(x);
+  communicator->SetState(x);
 }
