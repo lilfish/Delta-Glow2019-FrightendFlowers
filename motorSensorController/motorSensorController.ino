@@ -2,6 +2,7 @@
 #include "IMotor.hpp"
 #include "IDistanceSensor.hpp"
 #include "ICommunicator.hpp"
+#include "UltrasonicDistanceSensor.hpp"
 
 IDistanceSensor* sensor;
 IMotor* motor;
@@ -10,10 +11,9 @@ ICommunicator* communicator;
 void setup() {
   // put your setup code here, to run once:
   /*
-  sensor = new UltrasonicDistanceSensor(12,13);
-
+  
    */
-
+  sensor = new UltrasonicDistanceSensor(12,13);
 
 }
 

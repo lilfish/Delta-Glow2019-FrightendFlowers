@@ -9,6 +9,7 @@ private:
 public:
     States GetState();
     UltrasonicDistanceSensor(int out, int in);
+    ~UltrasonicDistanceSensor(); // <-- NEGEER DEZE MAAR VINCENT
 };
 
 UltrasonicDistanceSensor::UltrasonicDistanceSensor(int out, int in)
@@ -16,6 +17,8 @@ UltrasonicDistanceSensor::UltrasonicDistanceSensor(int out, int in)
     this->out = out;
     this->in = in;
 }
+
+UltrasonicDistanceSensor::~UltrasonicDistanceSensor() {}  // <-- NEGEER DEZE OOK MAAR VINCENT
 
 States UltrasonicDistanceSensor::GetState()
 {

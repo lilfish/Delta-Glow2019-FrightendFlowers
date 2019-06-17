@@ -5,5 +5,5 @@ class IDistanceSensor
 {
 public:
     virtual States GetState() = 0;
-    virtual ~IDistanceSensor() = 0;
+    virtual ~IDistanceSensor() {}
 };
