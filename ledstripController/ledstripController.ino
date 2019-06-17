@@ -1,22 +1,28 @@
-enum States {calm, restless1, restless2, restless3, out };
+#include "Enums.hpp"
+
+#include "ICommunicator.hpp"
+#include "ILedstrip.hpp"
+
+#include "SerialCommunicator.hpp"
+#include "WS2812Strip.hpp"
+
+ICommunicator* communicator;
+ILedstrip* strip;
+
+#define STRIP_SIZE 30
+#define STRIP_PIN 12
+
+CRGB Leds[STRIP_SIZE];
 
 void setup() {
   // put your setup code here, to run once:
-
+  communicator = new SerialCommunicator(115200);
+  FastLED.addLeds<WS2812B, STRIP_PIN, RGB>(Leds, STRIP_SIZE);
+  strip = new WS2812Strip(Leds,STRIP_SIZE);
 }
 
 void loop() {
   // put your main code here, to run repeatedly:
-
-}
-
-void communicationCode() {
-  
-
-}
-
-void ledstripCode(States state) {
-  //state 0 = calm
-  //state 1 to 3 = restless (1 - 3)
-  //state 4 = out
+  States state = communicator->GetState();
+  strip->SetState(state);
 }
