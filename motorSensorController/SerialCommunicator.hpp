@@ -27,10 +27,21 @@ SerialCommunicator::~SerialCommunicator()
 
 void SerialCommunicator::SetState(States state)
 {
+    
+    currentState = state;
+    #ifdef DEBUG
+    Serial.print("SetState @  Wanting to send this over rx & tx: ");
+    Serial.print('s');
+    Serial.println("");
+    Serial.println(state);
+    Serial.print("SetState @  currentState: ");
+    Serial.println(currentState);
+    Serial.println("");
+    #else
     Serial.print('s');
     Serial.print(state);
     Serial.flush();
-    currentState = state;
+    #endif
 }
 
 States SerialCommunicator::GetState()

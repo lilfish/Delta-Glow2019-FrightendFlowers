@@ -12,6 +12,7 @@ private: //HIER STAAN JE VARIABELEN DIE OVER DE HELE CLASS BESCHIKBAAR MOETEN ZI
     int distance;
 
     int restlesness = 0;
+    int potPin = 2;
 
     States new_state;
 
@@ -19,6 +20,7 @@ public: // HIER STAAND DE VARIABELEN DIE ZOWEL BINNEN ALS BUITEN DE CLASS BESCHI
     
 
     int GetDistance();
+    int PotentioSetDistance();
     int CalculateRestlesness(States state);
     UltrasonicDistanceSensor(int trigPin, int echoPin);
     ~UltrasonicDistanceSensor(); // <-- NEGEER DEZE MAAR VINCENT
@@ -52,8 +54,18 @@ int UltrasonicDistanceSensor::GetDistance()
     return distance;
 }
 
+int UltrasonicDistanceSensor::PotentioSetDistance()
+{
+    distance = analogRead(potPin);
+    distance = (float(250)/1023)*distance;
+    
+    // Prints the distance on the Serial Monitor
+    return distance;
+}
+
 int UltrasonicDistanceSensor::CalculateRestlesness(States state)
 {
+    // int current_detected_distance = PotentioSetDistance(); //For testing purposes only
     int current_detected_distance = GetDistance();
 
     /*
@@ -214,6 +226,8 @@ int UltrasonicDistanceSensor::CalculateRestlesness(States state)
     Serial.println(restlesness);
     Serial.print("CalculateRestlesness @  distance: ");
     Serial.println(distance);
+    Serial.print("CalculateRestlesness @  current_detected_distance: ");
+    Serial.println(current_detected_distance);
     Serial.print("CalculateRestlesness @  state: ");
     Serial.println((States)state);
     Serial.println("");
