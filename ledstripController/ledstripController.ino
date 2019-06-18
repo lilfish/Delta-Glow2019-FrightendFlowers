@@ -39,9 +39,8 @@ void loop() {
   currentMillis = millis();
   if (currentMillis - startMillis >= period) {
     startMillis = currentMillis;
-    // leds[x].setRGB(255,69,0);
-    // FastLED.show();
-    // leds[x] = CRGB::Black;
+    >>>>>>>>>>>>>>>>> (run function using int x & state) <<<<<<<<<<<<<
+    
     if (++x >= STRIP_SIZE) x = 0;
   }
 
