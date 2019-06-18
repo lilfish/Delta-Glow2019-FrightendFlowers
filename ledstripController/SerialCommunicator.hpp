@@ -17,7 +17,7 @@ class SerialCommunicator : public ICommunicator
 SerialCommunicator::SerialCommunicator(int baudrate)
 {
     Serial.begin(baudrate);
-    Serial1.begin(baudrate);
+    Serial2.begin(baudrate);
 
     currentState = UNINITIALIZED;
 }
@@ -41,18 +41,19 @@ States SerialCommunicator::GetState()
     char readBuffer;
     String readString;
 
-    while (Serial1.available() > 0)
+    while (Serial2.available() > 0)
     {
         delay(3);
-        if (Serial1.read() == 's')
+        if (Serial2.read() == 's')
         {
-            readBuffer = Serial1.read();
-            readString = readBuffer;
+            readBuffer = Serial2.read();
+            readString = readBuffer; 
+            Serial.println(readString);
         }
     }
-    Serial1.flush();
+    Serial2.flush();
 
-    givenState = readString.toInt();
+    givenState = (States)readString.toInt();
 
     
     if (givenState == CALM || givenState == RESTLESS1 || givenState == RESTLESS2 || givenState == RESTLESS3 || givenState == OUT)
