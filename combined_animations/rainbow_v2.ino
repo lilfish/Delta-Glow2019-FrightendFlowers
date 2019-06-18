@@ -8,7 +8,7 @@
 int fadeAmount = 5;  // Set the amount to fade I usually do 5, 10, 15, 20, 25 etc even up to 255.
 int brightness1 = 0; 
 
-CRGB leds1[51];
+CRGB leds1[51]
 CRGB leds2[34];
 
 CRGBPalette16 currentPalette;
