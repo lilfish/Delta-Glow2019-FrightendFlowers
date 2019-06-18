@@ -17,7 +17,7 @@ private: //HIER STAAN JE VARIABELEN DIE OVER DE HELE CLASS BESCHIKBAAR MOETEN ZI
     States new_state;
 
 public: // HIER STAAND DE VARIABELEN DIE ZOWEL BINNEN ALS BUITEN DE CLASS BESCHIKBAAR MOETEN ZIJN
-    
+
 
     int GetDistance();
     int PotentioSetDistance();
@@ -58,7 +58,7 @@ int UltrasonicDistanceSensor::PotentioSetDistance()
 {
     distance = analogRead(potPin);
     distance = (float(250)/1023)*distance;
-    
+
     // Prints the distance on the Serial Monitor
     return distance;
 }
@@ -69,10 +69,10 @@ int UltrasonicDistanceSensor::CalculateRestlesness(States state)
     int current_detected_distance = GetDistance();
 
     /*
-    Please don't kill me for this many if statements. 
-    I really had to make this in a quick way, so sometimes 
-    the quickest way is the most dirtiest.. 
-    I'm very dissapointed in my self... so... 
+    Please don't kill me for this many if statements.
+    I really had to make this in a quick way, so sometimes
+    the quickest way is the most dirtiest..
+    I'm very dissapointed in myself... so...
     you don't have to, change it when we have more time :)
      */
 
@@ -221,7 +221,7 @@ int UltrasonicDistanceSensor::CalculateRestlesness(States state)
             restlesness = 0;
         }
     }
-    #ifdef DEBUG   
+    #ifdef DEBUG
     Serial.print("CalculateRestlesness @  restlesness: ");
     Serial.println(restlesness);
     Serial.print("CalculateRestlesness @  distance: ");
