@@ -1,7 +1,16 @@
 #pragma once
 #include "ILedstrip.hpp"
 #include <FastLED.h>
+#include <Arduino.h>
+#define LED_TYPE    WS2812B
+#define COLOR_ORDER GRB
+#define BRIGHTNESS  34
+#define LED_PIN     7
+#define NUM_LEDS    60
+CRGB leds[NUM_LEDS];
 
+
+    
 class WS2812Strip : public ILedstrip
 {
 private:
@@ -9,28 +18,38 @@ private:
     int numleds;
     States old_state;
 
-    int stepinanimation;
+    int stepinanimation = 0;
     int calmCounter;
     void ledAnimation();
+
+    int strip_size =60; 
+    int currentMillis;
+    int startMillis;
+    int period;
 
 public:
     WS2812Strip(CRGB *ledArray, int numleds);
     ~WS2812Strip();
 
     void SetState(States state);
+    
 };
 
 WS2812Strip::WS2812Strip(CRGB *ledArray, int numleds)
 {
     this->ledArray = ledArray;
     this->numleds = numleds;
+    LEDS.addLeds<LED_TYPE, LED_PIN, COLOR_ORDER>(leds, NUM_LEDS);
+    FastLED.setBrightness(BRIGHTNESS);
+    FastLED.show();
 }
 
 WS2812Strip::~WS2812Strip()
 {
 }
 
-void ledAnimation(){
+void WS2812Strip::ledAnimation(){
+  Serial.println(stepinanimation);
   leds[stepinanimation - 2].setRGB(0, 0, 0);
   leds[stepinanimation].setRGB(255, 255, 0);
   FastLED.show();
@@ -44,36 +63,36 @@ void WS2812Strip::SetState(States state)
 
         calmCounter += 1;
 
-        if (state == CALM)
+        if (state == CALM || state == UNINITIALIZED)
         {
             ledAnimation();
-            if(calmCounter => 4){
+            if(calmCounter >= 4){
               calmCounter = 0;
-              stepinanimation += 1
+              stepinanimation += 1;
             }
         }
         else if (state == RESTLESS1)
         {
           ledAnimation();
-            if(calmCounter => 3){
+            if(calmCounter >= 3){
               calmCounter = 0;
-              stepinanimation += 1
+              stepinanimation += 1;
             }
         }
         else if (state == RESTLESS2)
         {
           ledAnimation();
-            if(calmCounter => 2){
+            if(calmCounter >= 2){
               calmCounter = 0;
-              stepinanimation += 1
+              stepinanimation += 1;
             }
         }
         else if (state == RESTLESS3)
         {
             ledAnimation();
-            if(calmCounter => 1){
+            if(calmCounter >= 1){
               calmCounter = 0;
-              stepinanimation += 1
+              stepinanimation += 1;
             }
         }
         else if (state == OUT)
@@ -81,7 +100,7 @@ void WS2812Strip::SetState(States state)
             //Serial.println("OUT");
         }
 
-        if (stepinanimation >= STRIP_SIZE){
+        if (stepinanimation >= NUM_LEDS){
           stepinanimation = 0;
         }
   }

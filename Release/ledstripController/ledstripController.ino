@@ -26,8 +26,8 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
-  delay(1000);
   States state = communicator->GetState();
+  Serial.println(state);
   strip->SetState(state);
 
   /*
