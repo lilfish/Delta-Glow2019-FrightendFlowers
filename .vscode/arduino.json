@@ -1,0 +1,5 @@
+{
+    "board": "arduino:avr:uno",
+    "sketch": "Example code\\Vincent\\SensorCode\\SensorCode.ino",
+    "port": "COM4"
+}
