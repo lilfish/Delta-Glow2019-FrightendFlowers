@@ -73,10 +73,6 @@ int UltrasonicDistanceSensor::CalculateRestlesness(States state)
     if(state == UNINITIALIZED){
         state = CALM;
     }
-    if (state == UNINITIALIZED)
-    {
-        state = CALM;
-    }
 
     if (current_detected_distance <= 250)
     {
