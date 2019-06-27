@@ -33,24 +33,30 @@ The flowers should probably also have a small vibration motor to vibrate the lea
 
 All the documentation can be found in the git wiki found [here](https://git.fhict.nl/I393504/glow-2019/wikis/home)
 
-As for the workflow: there are 3 main folders. These are
+As for the workflow: there are 4 main branches. These are
 
-* Example code
-* Untested
 * Release
+* Master
+* Untested
 * Others
 
-**Example code**
-In this folder you are allowed to make new folders with your name. In the folder you just created you can store your example code. These example codes are codes that can run on a arduino stand-alone, but not yet in the final version.
-
-**Untested**
-When you are done with an example code and want to intergrate it with the main code, you can add this to the untested. This code should be tested on a frame before moving to the Release folder.
-
-**Release**
+**Release**\
 When you have tested your code and it works on a frame and/or with multiple frames, you can move it to the Release. This is the code that will be uploaded to the arduinos. 
 
-**Others**
+**Master**
+
+**Untested**\
+When you are done with an example code and want to intergrate it with the main code, you can add this to the untested. This code should be tested on a frame before moving to the Release folder.
+
+**Others**\
 This folder is for everything not code related. These can be presentation files, frame blueprints and the 3D case plans. For each item you can make a new folder and upload it in there. This way this project doesnt need a drive when giving it to other students.
+
+**Example code**\
+In this folder you are allowed to make new folders with your name. In the folder you just created you can store your example code. These example codes are codes that can run on a arduino stand-alone, but not yet in the final version.
+
+
+
+
 
 
 Currently we have two arduino's per frame. Thats why you can find two folders inside the Untested and Release folder. These are called ``motorSensorController`` and ``ledstripController``. The motorSensorController is the motor & sensor arduino. The ledstripController is the code for the arduino inside the flower pot which will emit light effects and such.
