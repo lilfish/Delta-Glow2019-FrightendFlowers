@@ -8,39 +8,41 @@ class UltrasonicDistanceSensor : public IDistanceSensor
 private: //HIER STAAN JE VARIABELEN DIE OVER DE HELE CLASS BESCHIKBAAR MOETEN ZIJN, MAAR NIET ERBUITEN
     int trigPin;
     int echoPin;
-    long duration;
-    float distance;
 
-    int restlesness = 0;
-    int speed = 5;
+    int sensitivity = 5;
+
+    int restlessness = 0;
 
     float y;
 
-    States new_state;
+    States oldState;
+    
+
+  
+    States calculateState();
+    int getDistance();
 
 public: // HIER STAAND DE VARIABELEN DIE ZOWEL BINNEN ALS BUITEN DE CLASS BESCHIKBAAR MOETEN ZIJN
-
-
-    int GetDistance();
-    int PotentioSetDistance();
-    int CalculateRestlesness(States state);
+    int UpdateRestlessness(int distance);
+    States GetState();
     UltrasonicDistanceSensor(int trigPin, int echoPin);
     ~UltrasonicDistanceSensor(); // <-- NEGEER DEZE MAAR VINCENT
+
 };
 
 UltrasonicDistanceSensor::UltrasonicDistanceSensor(int trigPin, int echoPin)
 {
     this->trigPin = trigPin;
     this->echoPin = echoPin;
+    pinMode(trigPin, OUTPUT);
+    pinMode(echoPin, INPUT);
+    oldState = UNINITIALIZED;
 }
 
 UltrasonicDistanceSensor::~UltrasonicDistanceSensor() {} // <-- NEGEER DEZE OOK MAAR VINCENT
 
-int UltrasonicDistanceSensor::GetDistance()
+int UltrasonicDistanceSensor::getDistance()
 {
-    pinMode(trigPin, OUTPUT);
-    pinMode(echoPin, INPUT);
-
     //States currentState = CALM;
     digitalWrite(trigPin, LOW);
     delayMicroseconds(2);
@@ -49,95 +51,104 @@ int UltrasonicDistanceSensor::GetDistance()
     delayMicroseconds(10);
     digitalWrite(trigPin, LOW);
     // DO STUFF
-    duration = pulseIn(echoPin, HIGH);
+    long measuredDuration = pulseIn(echoPin, HIGH);
 
-    distance = duration * 0.034 / 2;
+    float measuredDistance = measuredDuration * 0.034 / 2;
     // Prints the distance on the Serial Monitor
-    return distance;
+    return (int)measuredDistance;
 }
 
-int UltrasonicDistanceSensor::PotentioSetDistance()
-{
-    distance = analogRead(potPin);
-    distance = (float(250)/1023)*distance;
 
-    // Prints the distance on the Serial Monitor
-    return distance;
-}
-
-int UltrasonicDistanceSensor::CalculateRestlesness(States state)
-{
-    // int current_detected_distance = PotentioSetDistance(); //For testing purposes only
-    int current_detected_distance = GetDistance();
-
-    if(state == UNINITIALIZED){
-        state = CALM;
+int UltrasonicDistanceSensor::UpdateRestlessness(int distance)
+{   // SEE WIKI FOR EXPLANATION: https://git.fhict.nl/I393504/glow-2019/wikis/%5BPROGRAMMING%5D-How-the-sensor-calculates-the-state
+    if(oldState == UNINITIALIZED)
+    {
+        oldState = CALM;
     }
 
-    if (current_detected_distance <= 250)
+    if (distance <= 250)
     {
-        y = speed - (float(speed) / 250 * current_detected_distance);
+        y = sensitivity - (float(sensitivity) / 250 * distance);
 
-        if (state == CALM)
+        if (oldState == CALM)
         {
-            restlesness += y;
+            restlessness += y;
         }
-        else if (state == RESTLESS1)
+        else if (oldState == RESTLESS1)
         {
-            restlesness += (y + 1);
+            restlessness += (y + 1);
         }
-        else if (state == RESTLESS2)
+        else if (oldState == RESTLESS2)
         {
-            restlesness += (y + 2);
+            restlessness += (y + 2);
         }
-        else if (state == RESTLESS3)
+        else if (oldState == RESTLESS3)
         {
-            restlesness += (y + 3);
+            restlessness += (y + 3);
         }
     }
-    else if (restlesness > 0)
+    else if (restlessness > 0)
     {
-        restlesness -= 4;
+        restlessness -= 4;
     }
-    if (restlesness < 0)
+    if (restlessness < 0)
     {
-        restlesness = 0;
+        restlessness = 0;
     }
     
     #ifdef DEBUG
-    Serial.print("CalculateRestlesness @  restlesness: ");
-    Serial.println(restlesness);
-    Serial.print("CalculateRestlesness @  distance: ");
+    Serial.print("Calculaterestlessness @  restlessness: ");
+    Serial.println(restlessness);
+    Serial.print("Calculaterestlessness @  distance: ");
     Serial.println(distance);
-    Serial.print("CalculateRestlesness @  current_detected_distance: ");
-    Serial.println(current_detected_distance);
-    Serial.print("CalculateRestlesness @  state: ");
-    Serial.println((States)state);
+    Serial.print("Calculaterestlessness @  state: ");
+    Serial.println((States)oldState);
     Serial.println("");
     #endif
-    return restlesness;
+
+    return restlessness;
 }
 
-StatesUltrasonicDistanceSensor::CalculateRestlesness(int restlesness)
+States UltrasonicDistanceSensor::calculateState()
+{   // SEE WIKI FOR EXPLANATION: https://git.fhict.nl/I393504/glow-2019/wikis/%5BPROGRAMMING%5D-How-the-sensor-calculates-the-state
+
+    if (restlessness < 0)
+    {
+        return CALM;
+    }
+
+    States newState = CALM;
+
+    if (restlessness > 0 && restlessness <= 100)
+    {
+        newState = (States)CALM;
+    }
+    else if (restlessness > 100 && restlessness <= 200)
+    {
+        newState = (States)RESTLESS1;
+    }
+    else if (restlessness > 200 && restlessness <= 300)
+    {
+        newState = (States)RESTLESS2;
+    }
+    else if (restlessness > 300 && restlessness <= 400)
+    {
+        newState = (States)RESTLESS3;
+    }
+    else if (restlessness > 400)
+    {
+        newState = (States)OUT;
+    }
+
+    oldState = newState;
+    return newState;
+}
+
+States UltrasonicDistanceSensor::GetState()
 {
-    if (restlesness > 0 && restlesness <= 100)
-  {
-    return (States)CALM;
-  }
-  else if (restlesness > 100 && restlesness <= 200)
-  {
-    return (States)RESTLESS1;
-  }
-  else if (restlesness > 200 && restlesness <= 300)
-  {
-    return (States)RESTLESS2;
-  }
-  else if (restlesness > 300 && restlesness <= 400)
-  {
-    return (States)RESTLESS3;
-  }
-  else if (restlesness > 400)
-  {
-    return (States)OUT;
-  }
+    int distance = getDistance();
+    UpdateRestlessness(distance);
+    // private restlessness is updated and used by calculateState
+    States state = calculateState();
+    return state;
 }

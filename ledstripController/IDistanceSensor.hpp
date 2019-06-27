@@ -4,9 +4,7 @@
 class IDistanceSensor
 {
 public:
-    virtual int GetDistance() = 0;
-    virtual int PotentioSetDistance() = 0;
-    virtual int CalculateRestlesness(States state) = 0;
-    virtual States CalculateRestlesness(int restlesness) = 0;
+    virtual States GetState() = 0;
+    virtual int UpdateRestlessness(int distance) = 0;
     virtual ~IDistanceSensor() {}
 };

@@ -10,13 +10,15 @@
 #include "WS2812Strip.hpp"
 #include "UltrasonicDistanceSensor.hpp"
 
-ICommunicator* communicator;
-ILedstrip* strip;
-
 #define STRIP_SIZE 30
 #define STRIP_PIN 12
 
-int x = 0;
+ICommunicator* communicator;
+ILedstrip* strip;
+
+IDistanceSensor* sensor;
+
+
 
 CRGB Leds[STRIP_SIZE];
 
@@ -26,6 +28,8 @@ void setup() {
   sensor = new UltrasonicDistanceSensor(9, 10);
 
   FastLED.addLeds<WS2812B, STRIP_PIN, RGB>(Leds, STRIP_SIZE);
+
+  
   strip = new WS2812Strip(Leds,STRIP_SIZE);
 
   #ifdef DEBUG
@@ -33,18 +37,19 @@ void setup() {
   #endif
 }
 
+
+States state = UNINITIALIZED;
 void loop() {
   // put your main code here, to run repeatedly:
-  if (state != (States)OUT)
-  {
-    restlesness = sensor->CalculateRestlesness(state);
-  }
+  
 
   //check what state it should be in
-  state = sensor->CalculateRestlesness(restlesness);
 
-  float motor_distance = motor->CalculateHeight(restlesness);
+
+  state = sensor->GetState();
+
+
+  
   Serial.println(state);
   strip->SetState(state);
-
 }
