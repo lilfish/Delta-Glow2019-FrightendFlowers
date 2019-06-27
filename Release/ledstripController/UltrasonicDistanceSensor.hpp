@@ -117,3 +117,27 @@ int UltrasonicDistanceSensor::CalculateRestlesness(States state)
     #endif
     return restlesness;
 }
+
+StatesUltrasonicDistanceSensor::CalculateRestlesness(int restlesness)
+{
+    if (restlesness > 0 && restlesness <= 100)
+  {
+    return (States)CALM;
+  }
+  else if (restlesness > 100 && restlesness <= 200)
+  {
+    return (States)RESTLESS1;
+  }
+  else if (restlesness > 200 && restlesness <= 300)
+  {
+    return (States)RESTLESS2;
+  }
+  else if (restlesness > 300 && restlesness <= 400)
+  {
+    return (States)RESTLESS3;
+  }
+  else if (restlesness > 400)
+  {
+    return (States)OUT;
+  }
+}
