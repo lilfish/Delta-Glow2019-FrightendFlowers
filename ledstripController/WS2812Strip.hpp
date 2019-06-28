@@ -32,6 +32,11 @@ WS2812Strip::WS2812Strip(CRGB *ledArray, int amountOfLeds, uint8_t brightness)
     FastLED.setBrightness(brightness);
 }
 
+WS2812Strip::~WS2812Strip()
+{
+    
+}
+
 bool WS2812Strip::SetPixel(int pos, uint8_t r, uint8_t g, uint8_t b)
 {
     if (pos >= amountOfLeds || pos < 0)

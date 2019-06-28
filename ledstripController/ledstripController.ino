@@ -28,9 +28,9 @@ void setup() {
   FastLED.addLeds<WS2812B, potLeds1Pin, RGB>(potLeds1, potLeds1Size);
   FastLED.addLeds<WS2812B, potLeds2Pin, RGB>(potLeds2, potLeds2Size);
 
-  pulseStrip = new WS2812Strip(pulseStrip, pulseLedsSize, 255);
-  potStrip1 = new WS2812Strip(potStrip1, potLeds1Pin, 255);
-  potStrip2 = new WS2812Strip(potStrip2, potLeds2Pin, 255);
+  pulseStrip = new WS2812Strip(pulseLeds, pulseLedsSize, 255);
+  potStrip1 = new WS2812Strip(potLeds1, potLeds1Pin, 255);
+  potStrip2 = new WS2812Strip(potLeds2, potLeds2Pin, 255);
 }
 
 void loop() {
