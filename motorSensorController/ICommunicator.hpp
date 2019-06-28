@@ -7,4 +7,7 @@ public:
     virtual void SetState(States state) = 0;
     virtual States GetState() = 0;
     virtual ~ICommunicator() { }
+
+    virtual void () = 0;
 };
+
