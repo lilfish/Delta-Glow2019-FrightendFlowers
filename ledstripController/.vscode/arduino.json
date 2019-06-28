@@ -1,5 +1,0 @@
-{
-    "board": "arduino:avr:megaADK",
-    "port": "COM5",
-    "sketch": "ledstripController.ino"
-}
