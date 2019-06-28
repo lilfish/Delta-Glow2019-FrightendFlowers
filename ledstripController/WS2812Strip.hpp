@@ -10,101 +10,38 @@
 CRGB leds[NUM_LEDS];
 
 
-    
+
 class WS2812Strip : public ILedstrip
 {
 private:
     CRGB *ledArray;
-    int numleds;
-    States old_state;
-
-    int stepinanimation = 0;
-    int calmCounter;
-    void ledAnimation();
-
-    int strip_size =60; 
-    int currentMillis;
-    int startMillis;
-    int period;
+    int amountOfLeds;
 
 public:
-    WS2812Strip(CRGB *ledArray, int numleds);
+    WS2812Strip(CRGB *ledArray, int numleds, uint8_t brightness);
     ~WS2812Strip();
 
-    void SetState(States state);
-    
+    bool SetPixel(int pos, uint8_t r, uint8_t g, uint8_t b);
+    void Update();
 };
 
-WS2812Strip::WS2812Strip(CRGB *ledArray, int numleds)
+WS2812Strip::WS2812Strip(CRGB *ledArray, int amountOfLeds, uint8_t brightness)
 {
     this->ledArray = ledArray;
-    this->numleds = numleds;
-    LEDS.addLeds<LED_TYPE, LED_PIN, COLOR_ORDER>(leds, NUM_LEDS);
-    FastLED.setBrightness(BRIGHTNESS);
+    this->amountOfLeds = amountOfLeds;
+    FastLED.setBrightness(brightness);
+}
+
+bool WS2812Strip::SetPixel(int pos, uint8_t r, uint8_t g, uint8_t b)
+{
+    if (pos >= amountOfLeds || pos < 0)
+    {
+        return false;
+    }
+    ledArray[pos] = CRGB(r,g,b);
+}
+
+void WS2812Strip::Update()
+{
     FastLED.show();
-}
-
-WS2812Strip::~WS2812Strip()
-{
-}
-
-void WS2812Strip::ledAnimation(){
-  Serial.println(stepinanimation);
-  leds[stepinanimation - 2].setRGB(0, 0, 0);
-  leds[stepinanimation].setRGB(255, 255, 0);
-  FastLED.show();
-}
-
-void WS2812Strip::SetState(States state)
-{
-    currentMillis = millis();
-    if (currentMillis - startMillis >= period) {
-        startMillis = currentMillis;
-
-        calmCounter += 1;
-
-        if (state == CALM || state == UNINITIALIZED)
-        {
-            ledAnimation();
-            if(calmCounter >= 4){
-              calmCounter = 0;
-              stepinanimation += 1;
-            }
-        }
-        else if (state == RESTLESS1)
-        {
-          ledAnimation();
-            if(calmCounter >= 3){
-              calmCounter = 0;
-              stepinanimation += 1;
-            }
-        }
-        else if (state == RESTLESS2)
-        {
-          ledAnimation();
-            if(calmCounter >= 2){
-              calmCounter = 0;
-              stepinanimation += 1;
-            }
-        }
-        else if (state == RESTLESS3)
-        {
-            ledAnimation();
-            if(calmCounter >= 1){
-              calmCounter = 0;
-              stepinanimation += 1;
-            }
-        }
-        else if (state == OUT)
-        {
-            //Serial.println("OUT");
-        }
-
-        if (stepinanimation >= NUM_LEDS){
-          stepinanimation = 0;
-        }
-  }
-
-    ledArray[1] = CRGB(255, 255, 0);
-    FastLED.show(); //do stuff
 }

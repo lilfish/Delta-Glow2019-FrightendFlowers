@@ -4,7 +4,7 @@
 class ILedstrip
 {
 public:
-    virtual void SetState(States state) = 0;
-    virtual void ledAnimation() = 0;
+    virtual bool SetPixel(int pos, uint8_t r, uint8_t g, uint8_t b) = 0;
+    virtual void Update();
     virtual ~ILedstrip() {}
 };
