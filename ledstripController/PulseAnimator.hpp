@@ -8,7 +8,7 @@ private:
     ILedstrip* strip;
     int stripSize;
 public:
-    PulseAnimator(ILedstrip* strip, int stripSize);
+    PulseAnimator(ILedstrip* strip);
     ~PulseAnimator();
 
     void Update();
@@ -16,10 +16,10 @@ public:
     void PulseRight(int intensity);
 };
 
-PulseAnimator::PulseAnimator(ILedstrip* strip, int stripSize)
+PulseAnimator::PulseAnimator(ILedstrip* strip)
 {
     this->strip = strip;
-    this->stripSize = stripSize;
+    this->stripSize = strip->GetSize();
 }
 
 PulseAnimator::~PulseAnimator()

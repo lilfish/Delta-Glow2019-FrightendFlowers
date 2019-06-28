@@ -21,6 +21,8 @@ public:
     WS2812Strip(CRGB *ledArray, int numleds, uint8_t brightness);
     ~WS2812Strip();
 
+    int GetSize();
+
     bool SetPixel(int pos, uint8_t r, uint8_t g, uint8_t b);
     void Update();
 };
@@ -34,7 +36,12 @@ WS2812Strip::WS2812Strip(CRGB *ledArray, int amountOfLeds, uint8_t brightness)
 
 WS2812Strip::~WS2812Strip()
 {
-    
+
+}
+
+int WS2812Strip::GetSize()
+{
+    return amountOfLeds;
 }
 
 bool WS2812Strip::SetPixel(int pos, uint8_t r, uint8_t g, uint8_t b)
