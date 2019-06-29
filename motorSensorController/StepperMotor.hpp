@@ -1,64 +1,67 @@
 #pragma once
-#include "IMotor.hpp"
+
 #include "Enums.hpp"
 #include <Stepper.h>
 
-class StepperMotor : public IMotor
+class StepperMotor
 {
 private:
     Stepper* stepper;
-    States state;
-    float stepper_height;
+    int currentHeight;
 public:
     StepperMotor(int stepsPerRev, int m1a, int m1b, int m2a, int m2b);
     void Update();
     void SetState(States state);
     float CalculateHeight(float restlesness);
     ~StepperMotor();
+
+    bool GoToHeight(int height);
+    int CurrentHeight();
+    bool Shake(int intensity);
+    void FallDown();
 };
 
 StepperMotor::StepperMotor(int stepsPerRev, int m1a, int m1b, int m2a, int m2b) : IMotor()
 {
     stepper = new Stepper(stepsPerRev, m1a, m1b, m2a, m2b);
+    stepper.SetSpeed(60);
+
+    pinMode(m1a, OUTPUT);
+    pinMode(m1b, OUTPUT);
+    pinMode(m2a, OUTPUT);
+    pinMode(m2b, OUTPUT);
+
     state = CALM;
 }
 
 StepperMotor::~StepperMotor()
 {
-    //REMOVE STEPPER*;
+    delete stepper;
 }
 
-void StepperMotor::Update()
+bool StepperMotor::GoToHeight(int height)
 {
-    //MOVETOPOS;
+    int posToMove = currentHeight + height;
+    stepper.step(posToMove);
+    return true;
 }
 
-void StepperMotor::SetState(States state)
+bool StepperMotor::Shake(int intensity)
 {
-    
+    stepper.step(intensity);
+    stepper.step(-1 * intensity);
+    return true;
 }
 
-float StepperMotor::CalculateHeight(float restlesness)
+int StepperMotor::CurrentHeight()
 {
-    /*
-    My calculations:
-    The frame is around 220cm
-    the plant will hang at around 110cm (the center)
-    there are 4 states which are devided by a restlesness of 0-400
+    return currentHeight;
+}
 
-    that means we can devide 110/400*restlesness to get the actual height of the plant.
-    If restlesness > 400, drop dead.
-     */
-    stepper_height = (float)110 / 400;
-    stepper_height = stepper_height * restlesness;
-
-    #ifdef DEBUG
-    Serial.print("CalculateHeight @  restlesness: ");
-    Serial.println(restlesness);
-    Serial.print("CalculateHeight @  stepper_height: ");
-    Serial.println(stepper_height);
-    Serial.println("");
-    #endif
-
-    return stepper_height;
+void StepperMotor::FallDown()
+{
+    digitalWrite(m1a,LOW);
+    digitalWrite(m1b,LOW);
+    digitalWrite(m2a,LOW);
+    digitalWrite(m2b,LOW);
 }

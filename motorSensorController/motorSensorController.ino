@@ -3,30 +3,18 @@
 #include "Enums.hpp"
 
 #include "IMotor.hpp"
-#include "ICommunicator.hpp"
+#include "StepperMotor.hpp"
 
-#include "SerialCommunicator.hpp"
-
-IMotor *motor;
-ICommunicator *communicator;
-States state = UNINITIALIZED;
-
-int restlesness = 0;
+StepperMotor motor(200,1,2,3,4);
 
 void setup()
 {
-  // put your setup code here, to run once:
-  communicator = new SerialCommunicator(9600);
+// put your setup code here, to run once:
 
 }
 
 void loop()
 {
-  
-  // // put your main code here, to run repeatedly:
-  States state = communicator->GetState();
-  
-  communicator->SetState(state);
-  
-  delay(500);
+    motor.GoToHeight(900);
+    motor.Shake(3);
 }
