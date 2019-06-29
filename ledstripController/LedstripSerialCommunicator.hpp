@@ -8,6 +8,7 @@ public:
     bool incomingPulseLeft(int& intensity);
     bool incomingPulseRight(int& intensity);
     bool incomingPulseCenter(int& intensity);
+    void SendMood(States mood);
 };
 
 LedstripSerialCommunicator::LedstripSerialCommunicator(int baudrate)
@@ -55,4 +56,10 @@ bool LedstripSerialCommunicator::incomingPulseCenter(int& intensity)
         }
     }
     return false;
+}
+
+void LedstripSerialCommunicator::SendMood(States mood)
+{
+    char buf[] = { 'm', mood };
+    Serial3.write(buf,2);
 }

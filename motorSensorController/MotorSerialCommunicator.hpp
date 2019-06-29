@@ -85,8 +85,15 @@ void MotorSerialCommunicator::SendPulseLeftStrip(int outgoingIntensity)
     Serial3.write(buf,2);
 }
 
-void MotorSerialCommunicator::SendMood(States mood)
+bool MotorSerialCommunicator::GetMood(States& mood)
 {
-    char buf[] = { 'm', mood };
-    Serial3.write(buf,2);
+    if (Serial3.available() > 1)
+    {
+        if (Serial3.read() == 'm')
+        {
+            mood = Serial.read();
+            return true;
+        }
+    }
+    return false;
 }

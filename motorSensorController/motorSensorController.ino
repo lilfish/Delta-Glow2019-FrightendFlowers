@@ -1,17 +1,18 @@
-// #define DEBUG
-
 #include "Enums.hpp"
-
 #include "MotorSerialCommunicator.hpp"
 
+MotorSerialCommunicator com(115200);
 
 void setup()
 {
-// put your setup code here, to run once:
 
 }
 
+int buffer;
 void loop()
-{
-
+{  
+    if (com.GetPulseLeftFrame(buffer))
+    {
+        com.SendPulseLeftStrip(buffer);
+    }
 }
