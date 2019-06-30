@@ -1,2 +1,0 @@
-#pragma once
-enum States { UNINITIALIZED, CALM, RESTLESS1, RESTLESS2, RESTLESS3, OUT };
