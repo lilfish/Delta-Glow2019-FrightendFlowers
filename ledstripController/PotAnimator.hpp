@@ -8,15 +8,16 @@ private:
     ILedstrip* strip;
     int stripSize;
 public:
-    PotAnimator(ILedstrip* strip, int stripSize);
+    PotAnimator(ILedstrip* strip);
     ~PotAnimator();
 
     void Update();
-    void FadeEffect(int intensity);
-    void FadeOut(int intensity);
+    void FadeEffect();
+    void FadeOut();
+    void FadeIn();
 };
 
-PotAnimator::PotAnimator(ILedstrip* strip, int stripSize)
+PotAnimator::PotAnimator(ILedstrip* strip)
 {
     this->strip = strip;
     this->stripSize = stripSize;
@@ -29,15 +30,15 @@ PotAnimator::~PotAnimator()
 
 void PotAnimator::Update()
 {
-    ;
+    FastLED.show();
 }
 
-void PotAnimator::FadeEffect(int intensity)
+void PotAnimator::FadeEffect()
 {
     ;
 }
 
-void PotAnimator::FadeOut(int intensity)
+void PotAnimator::FadeOut()
 {
     ;
 }

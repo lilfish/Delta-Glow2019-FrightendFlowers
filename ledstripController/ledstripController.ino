@@ -5,22 +5,25 @@
 #include "ILedstrip.hpp"
 #include "WS2812Strip.hpp"
 #include "PulseAnimator.hpp"
+#include "PotAnimator.hpp"
 
 #define STRIP_SIZE 30
 #define STRIP_PIN 12
 
-const int pulseLedsSize = 0;
-const int pulseLedsPin = 0;
-const int potLeds1Size = 0;
-const int potLeds1Pin = 0;
-const int potLeds2Size = 0;
-const int potLeds2Pin = 0;
+const int pulseLedsSize = 60;
+const int pulseLedsPin = 10;
+const int potLeds1Size = 30;
+const int potLeds1Pin = 8;
+const int potLeds2Size = 30;
+const int potLeds2Pin = 9;
 
 CRGB pulseLeds[pulseLedsSize];
 CRGB potLeds1[potLeds1Size];
 CRGB potLeds2[potLeds2Size];
 
 PulseAnimator* pulseAnimator;
+PotAnimator* potAnimator;
+PotAnimator* potAnimator2;
 
 void setup() {
   FastLED.addLeds<WS2812B, pulseLedsPin, RGB>(pulseLeds, pulseLedsSize);
@@ -36,9 +39,15 @@ void setup() {
   potStrip2 = new WS2812Strip(potLeds2, potLeds2Pin, 255);
 
   pulseAnimator = new PulseAnimator(pulseStrip);
+  potAnimator = new PotAnimator(potStrip1);
+  potAnimator2 = new PotAnimator(potStrip2);
+
+  Serial.begin(9600);
 }
 
 void loop() {
-  pulseAnimator->PulseLeft(255);
+  if (Serial.read() == 's'){
+    pulseAnimator->PulseLeft(255);
+  }
   pulseAnimator->Update();
 }
