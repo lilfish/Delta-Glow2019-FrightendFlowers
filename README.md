@@ -33,32 +33,28 @@ The flowers should probably also have a small vibration motor to vibrate the lea
 
 All the documentation can be found in the git wiki found [here](https://git.fhict.nl/I393504/glow-2019/wikis/home)
 
-As for the workflow: there are 4 main branches. These are
+As for the workflow: there are 4 main folders, these are
 
-* Release
-* Master
-* Untested
+* Example code
 * Others
+* ledstripController
+* motorSensorController
 
-**Release**\
-When you have tested your code and it works on a frame and/or with multiple frames, you can move it to the Release. This is the code that will be uploaded to the arduinos. 
-
-**Master**\
-This will have all the final code, before getting tested for release.
-
-**Untested**\
-When you are done with an example code and want to intergrate it with the main code, you can add this to the untested. This code should be tested on a frame before moving to the Release folder.
+**Example code**\
+In the example code folder you can find code snippets used to test invidual parts of the arduino code. If you have made a test on an arduino and you want to keep it in the git, make a new folder with your name in ``Example code`` and upload your arduino script folder in there. This way we know who tested what.
 
 **Others**\
 This folder is for everything not code related. These can be presentation files, frame blueprints and the 3D case plans. For each item you can make a new folder and upload it in there. This way this project doesnt need a drive when giving it to other students.
 In this folder you are also allowed to make new folders with your name. In the folder you just created you can store example code. These example codes are codes that can run on a arduino stand-alone, but not yet in the final version.
 
+**ledstripController**\
+The ledstrip controller is the "slave arduino" that reads out the sensor data and makes the ledlight effects. This arduino can communicate over serial communication to the "master arduino" which is the motorSensorController. The ledstripController is uploaded to an **arduino uno**
 
+**motorSensorController**\
+The motorSensor controller is the "master arduino" that can communicate to the ledstrip controller to show different light effects. This controller is also the controller that controls the motor. The controller is also used to communicate between frames (that are left or right). The motorSensorController is uploaded to an **arduino mega**.
 
+### Branches
 
-
-
-Currently we have two arduino's per frame. Thats why you can find two folders inside the Untested and Release folder. These are called ``motorSensorController`` and ``ledstripController``. The motorSensorController is the motor & sensor arduino. The ledstripController is the code for the arduino inside the flower pot which will emit light effects and such.
-
+In this project we use branches to test invidual pieces of code for one of the two controllers. As an example, we have a branch called CommunicatorCode. This is the code that was made to communicate between the slave and master adruino aswell as the different frames. This code was later merged into the master controllers (ledstripController or motorSensorController).
 
 
