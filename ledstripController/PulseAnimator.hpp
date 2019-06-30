@@ -20,6 +20,9 @@ private:
     int arraySizeLeft = 50;
     int arraySizeRight = 50;
 
+    // for desiding the pulse length
+    long randNumber;
+
 public:
     PulseAnimator(ILedstrip *strip);
     ~PulseAnimator();
@@ -100,7 +103,7 @@ void PulseAnimator::Update()
     boolean print_right = false;
     for (int i = 0; i < arraySizeLeft; i++)
     {
-        if (pulseLeftArray[i] > -1)
+        if (pulseRightArray[i] > -1)
         {
             print_right = true;
         }
@@ -133,12 +136,9 @@ void PulseAnimator::Update()
         }
         else if (pulseRightArray[i] != -1)
         {
-            if (pulseRightArray[i] <= stripSize)
-            {
-                strip->SetPixel(i, 0, 0, 0);
-                strip->SetPixel((i - 1), 255, 0, 0);
-                pulseRightArray[i] += 1;
-            }
+            strip->SetPixel(i, 0, 0, 0);
+            strip->SetPixel((i - 1), 255, 0, 0);
+            pulseRightArray[i] -= 1;
         }
     }
 
@@ -147,30 +147,82 @@ void PulseAnimator::Update()
 
 void PulseAnimator::PulseLeft(int intensity)
 {
+    randNumber = random(1, 3);
+
 #ifdef DEBUG
-    Serial.println("(LEFT) Adding a pulse to the  ledstrip");
+    Serial.print("(RIGHT) Adding a pulse to the  ledstrip - Pulse width: ");
+    Serial.println(randNumber);
+#endif
+
+    bool left_done = false;
+    int left_counter = 0;
+
+#ifdef DEBUG
+    Serial.print("adding numbers: ");
 #endif
     for (size_t i = 0; i < arraySizeLeft; i++)
     {
-        if (pulseLeftArray[i] == -1)
+        if (!left_done)
         {
-            pulseLeftArray[i] = 0;
-            break;
+            if (pulseLeftArray[i] == -1)
+            {
+                left_counter += 1;
+                pulseLeftArray[i] = 0;
+#ifdef DEBUG
+                Serial.print(i);
+                Serial.print(',');
+#endif
+                if (left_counter == randNumber)
+                {
+                    left_done = true;
+                }
+            }
         }
     }
+#ifdef DEBUG
+    Serial.println(" to the let ledstrip");
+    Serial.print("Left counter: ");
+    Serial.println(left_counter);
+#endif
 }
 
 void PulseAnimator::PulseRight(int intensity)
 {
+    randNumber = random(1, 3);
+
 #ifdef DEBUG
-    Serial.println("(RIGHT) Adding a pulse to the  ledstrip");
+    Serial.print("(RIGHT) Adding a pulse to the  ledstrip - Pulse width: ");
+    Serial.println(randNumber);
+#endif
+
+    bool right_done = false;
+    int right_counter = 0;
+
+#ifdef DEBUG
+    Serial.print("adding numbers: ");
 #endif
     for (size_t i = 0; i < arraySizeRight; i++)
     {
-        if (pulseRightArray[i] == -1)
+        if (!right_done)
         {
-            pulseRightArray[i] = 0;
-            break;
+            if (pulseRightArray[i] == -1)
+            {
+                right_counter += 1;
+                pulseRightArray[i] = stripSize;
+#ifdef DEBUG
+                Serial.print(i);
+                Serial.print(',');
+#endif
+                if (right_counter == randNumber)
+                {
+                    right_done = true;
+                }
+            }
         }
     }
+#ifdef DEBUG
+    Serial.println(" to the let ledstrip");
+    Serial.print("Right counter: ");
+    Serial.println(right_counter);
+#endif
 }

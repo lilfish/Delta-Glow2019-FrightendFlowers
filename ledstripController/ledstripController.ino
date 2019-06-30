@@ -63,7 +63,7 @@ void loop()
   }
   else if (Serial.read() == 'r')
   {
-    pulseAnimator->PulseLeft(255);
+    pulseAnimator->PulseRight(255);
 #ifdef DEBUG
     Serial.println("I read a r (Right pulse) ");
 #endif
