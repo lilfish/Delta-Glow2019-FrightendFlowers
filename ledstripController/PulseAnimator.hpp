@@ -11,13 +11,15 @@ private:
     ILedstrip *strip;
     int stripSize;
 
-    int stepinanimation = 0;
-    int calmCounter;
-    int currentMillis;
-    int startMillis;
-    int period;
-
     States state = CALM;
+
+    //array needed for pulse left and PulseRight
+    //we allow maximal 50 pulses & set all on -1
+    int pulseLeftArray[50];
+    int pulseRightArray[50];
+    int arraySizeLeft = 50;
+    int arraySizeRight = 50;
+
 public:
     PulseAnimator(ILedstrip *strip);
     ~PulseAnimator();
@@ -31,6 +33,16 @@ PulseAnimator::PulseAnimator(ILedstrip *strip)
 {
     this->strip = strip;
     this->stripSize = strip->GetSize();
+
+    for (byte i = 0; i < arraySizeLeft; i++)
+    {
+        this->pulseLeftArray[i] = -1;
+    }
+
+    for (byte i = 0; i < arraySizeRight; i++)
+    {
+        this->pulseRightArray[i] = -1;
+    }
 }
 
 PulseAnimator::~PulseAnimator()
@@ -40,15 +52,125 @@ PulseAnimator::~PulseAnimator()
 
 void PulseAnimator::Update()
 {
+#ifdef DEBUG
+    boolean print_left = false;
+    for (int i = 0; i < arraySizeLeft; i++)
+    {
+        if (pulseLeftArray[i] > -1)
+        {
+            print_left = true;
+        }
+    }
+    if (print_left)
+    {
+        Serial.print("(LEFT)");
+        Serial.print(arraySizeLeft);
+        Serial.print(": ");
+        Serial.print('[');
+        for (int i = 0; i < arraySizeLeft; i++)
+        {
+            Serial.print(pulseLeftArray[i]);
+            Serial.print(", ");
+        }
+        Serial.println(']');
+    }
+#endif
+
+    // Pulse left going up 1 if it's not stripsize + 1
+    for (int i = 0; i < arraySizeLeft; i++)
+    {
+
+        if (pulseLeftArray[i] >= stripSize)
+        {
+            strip->SetPixel(i, 0, 0, 0);
+            pulseLeftArray[i] = -1;
+#ifdef DEBUG
+            Serial.println("(LEFT) Done playing a full strip");
+#endif
+        }
+        else if (pulseLeftArray[i] >= 0)
+        {
+            strip->SetPixel(i, 0, 0, 0);
+            strip->SetPixel((i + 1), 255, 0, 0);
+            pulseLeftArray[i] += 1;
+        }
+    }
+
+#ifdef DEBUG
+    boolean print_right = false;
+    for (int i = 0; i < arraySizeLeft; i++)
+    {
+        if (pulseLeftArray[i] > -1)
+        {
+            print_right = true;
+        }
+    }
+    if (print_right)
+    {
+        Serial.print("(RIGHT)");
+        Serial.print(arraySizeRight);
+        Serial.print(": ");
+        Serial.print('[');
+        for (int i = 0; i < arraySizeRight; i++)
+        {
+            Serial.print(pulseRightArray[i]);
+            Serial.print(", ");
+        }
+        Serial.println(']');
+    }
+#endif
+
+    // Pulse right going down 1 if it's not stripsize + 1
+    for (int i = 0; i < arraySizeRight; i++)
+    {
+        if (pulseRightArray[i] == 0)
+        {
+            strip->SetPixel(i, 0, 0, 0);
+            pulseRightArray[i] = -1;
+#ifdef DEBUG
+            Serial.println("(RIGHT) Done playing a full strip right side");
+#endif
+        }
+        else if (pulseRightArray[i] != -1)
+        {
+            if (pulseRightArray[i] <= stripSize)
+            {
+                strip->SetPixel(i, 0, 0, 0);
+                strip->SetPixel((i - 1), 255, 0, 0);
+                pulseRightArray[i] += 1;
+            }
+        }
+    }
+
     strip->Update(); //do stuff
 }
 
 void PulseAnimator::PulseLeft(int intensity)
 {
-    
+#ifdef DEBUG
+    Serial.println("(LEFT) Adding a pulse to the  ledstrip");
+#endif
+    for (size_t i = 0; i < arraySizeLeft; i++)
+    {
+        if (pulseLeftArray[i] == -1)
+        {
+            pulseLeftArray[i] = 0;
+            break;
+        }
+    }
 }
 
 void PulseAnimator::PulseRight(int intensity)
 {
-    ;
+#ifdef DEBUG
+    Serial.println("(RIGHT) Adding a pulse to the  ledstrip");
+#endif
+    for (size_t i = 0; i < arraySizeRight; i++)
+    {
+        if (pulseRightArray[i] == -1)
+        {
+            pulseRightArray[i] = 0;
+            break;
+        }
+    }
 }
