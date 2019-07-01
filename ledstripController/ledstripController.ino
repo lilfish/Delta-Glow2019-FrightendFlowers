@@ -17,10 +17,11 @@ const int potLeds1Pin = 8;
 const int potLeds2Size = 30;
 const int potLeds2Pin = 9;
 
-bool start_fading = false;  
+bool start_fading = false;
 bool potAnimator_bool = false;
 bool un_fade = false;
 bool dead = false;
+bool fade_in_out = false;
 
 CRGB pulseLeds[pulseLedsSize];
 CRGB potLeds1[potLeds1Size];
@@ -73,19 +74,31 @@ void loop()
   }
   else if (Serial.read() == '5')
   {
-    start_fading = true;
+    if (!dead)
+    {
+      dead = true;
+      start_fading = true;
+    }
 #ifdef DEBUG
     Serial.println("I read a 5 (Going out) ");
 #endif
   }
   else if (Serial.read() == '1')
   {
-    if(dead){
+    if (dead)
+    {
       dead = false;
       un_fade = true;
     }
 #ifdef DEBUG
     Serial.println("I read a 1 (Calm) ");
+#endif
+  }
+  else if (Serial.read() == 'p')
+  {
+    fade_in_out = true;
+#ifdef DEBUG
+    Serial.println("I read p (FadeEffect)");
 #endif
   }
 
@@ -95,18 +108,29 @@ void loop()
   //do a fade effect for 600 ticks
   if (start_fading)
   {
-    if(potAnimator->FadeOut()){
-        Serial.println("potAnimator->FadeOut(); = true");
-        start_fading = false;
-        dead = true;
+    if (potAnimator->FadeOut())
+    {
+      Serial.println("potAnimator->FadeOut(); = true");
+      start_fading = false;
+      dead = true;
     }
   }
   if (un_fade)
   {
-    if(potAnimator->FadeIn()){
-        Serial.println("potAnimator->FadeIn(); = true");
-        un_fade = false;
-        dead = false;
+    if (potAnimator->FadeIn())
+    {
+      Serial.println("potAnimator->FadeIn(); = true");
+      un_fade = false;
+      dead = false;
+    }
+  }
+
+  if (fade_in_out)
+  {
+    if (potAnimator->FadeEffect())
+    {
+      Serial.println("potAnimator->FadeEffect(); = true");
+      fade_in_out = false;
     }
   }
 }

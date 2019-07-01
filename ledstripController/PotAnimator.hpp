@@ -10,7 +10,11 @@ private:
 
     unsigned long fade_timer = 0;
     int fade_counter = 0;
+    // fade speed = for fadeIn and fadeOut
     int fade_speed = 60;
+    // fade_effect_speed = for fadeEffect
+    int fade_effect_speed = 40;
+
     float max_brightness = 255;
 
     // virtual float easeIn() = 0;
@@ -20,7 +24,7 @@ public:
     ~PotAnimator();
 
     void Update();
-    void FadeEffect();
+    bool FadeEffect();
     bool FadeOut();
     bool FadeIn();
 
@@ -43,19 +47,57 @@ void PotAnimator::Update()
     strip->Update();
 }
 
-void PotAnimator::FadeEffect()
+bool PotAnimator::FadeEffect()
 {
-    ;
+    if (millis() > fade_timer + 1)
+    {
+        fade_timer = millis();
+        fade_counter += 1;
+        float brightness = 0;
+
+        if (fade_counter <= fade_speed / 2)
+        {
+            brightness = max_brightness - SinEasingFunction(fade_counter, 0, max_brightness, fade_speed);
+        }
+        else
+        {
+            brightness = SinEasingFunction(fade_counter, 0, max_brightness, fade_speed);
+        }
+
+#ifdef DEBUG
+        Serial.println("fadeIn&out effect - Millis passed: ");
+        Serial.println(fade_counter);
+        Serial.print("Brightness is set to: ");
+        Serial.println(brightness);
+#endif
+
+        strip->SetBrightness(int(brightness));
+
+        if (fade_counter == fade_speed)
+        {
+            fade_counter = 0;
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+    else
+    {
+        return false;
+    }
 }
 
 bool PotAnimator::FadeOut()
 {
-    if (millis() > fade_timer + 50)
+    if (millis() > fade_timer + 1)
     {
         fade_timer = millis();
         fade_counter += 1;
-
-        float brightness = max_brightness - SinEasingFunction(fade_counter, 0, max_brightness, fade_speed);
+        float brightness = 0;
+        
+        brightness = max_brightness - SinEasingFunction(fade_counter, 0, max_brightness, fade_speed);
 
 #ifdef DEBUG
         Serial.println("Fade out effect - Millis passed: ");
@@ -83,15 +125,16 @@ bool PotAnimator::FadeOut()
 
 bool PotAnimator::FadeIn()
 {
-    if (millis() > fade_timer + 50)
+    if (millis() > fade_timer + 1)
     {
         fade_timer = millis();
         fade_counter += 1;
+        float brightness = 0;
 
-        float brightness = SinEasingFunction(fade_counter, 0, max_brightness, fade_speed);
-        
+        brightness = SinEasingFunction(fade_counter, 0, max_brightness, fade_speed);
+
 #ifdef DEBUG
-        Serial.println("Fade out effect - Millis passed: ");
+        Serial.println("Fade in effect - Millis passed: ");
         Serial.println(fade_counter);
         Serial.print("Brightness is set to: ");
         Serial.println(brightness);
