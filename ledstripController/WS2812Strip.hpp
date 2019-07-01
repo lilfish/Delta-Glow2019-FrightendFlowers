@@ -24,6 +24,7 @@ public:
     int GetSize();
 
     bool SetPixel(int pos, uint8_t r, uint8_t g, uint8_t b);
+    void SetBrightness(int brightness);
     void Update();
 };
 
@@ -56,4 +57,9 @@ bool WS2812Strip::SetPixel(int pos, uint8_t r, uint8_t g, uint8_t b)
 void WS2812Strip::Update()
 {
     FastLED.show();
+}
+
+void WS2812Strip::SetBrightness(int brightness)
+{
+    FastLED.setBrightness(brightness);
 }

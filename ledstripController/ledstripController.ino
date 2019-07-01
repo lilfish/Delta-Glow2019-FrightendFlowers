@@ -17,6 +17,11 @@ const int potLeds1Pin = 8;
 const int potLeds2Size = 30;
 const int potLeds2Pin = 9;
 
+bool start_fading = false;  
+bool potAnimator_bool = false;
+bool un_fade = false;
+bool dead = false;
+
 CRGB pulseLeds[pulseLedsSize];
 CRGB potLeds1[potLeds1Size];
 CRGB potLeds2[potLeds2Size];
@@ -24,9 +29,6 @@ CRGB potLeds2[potLeds2Size];
 PulseAnimator *pulseAnimator;
 PotAnimator *potAnimator;
 PotAnimator *potAnimator2;
-
-int period = 500;
-unsigned long time_now = 0;
 
 void setup()
 {
@@ -54,6 +56,7 @@ void setup()
 
 void loop()
 {
+  // Serial communication if statemnets
   if (Serial.read() == 'l')
   {
     pulseAnimator->PulseLeft(255);
@@ -68,13 +71,42 @@ void loop()
     Serial.println("I read a r (Right pulse) ");
 #endif
   }
-
-  if (millis() > time_now + period)
+  else if (Serial.read() == '5')
   {
-    time_now = millis();
+    start_fading = true;
 #ifdef DEBUG
-    Serial.println("Updating leds");
+    Serial.println("I read a 5 (Going out) ");
 #endif
-    pulseAnimator->Update();
+  }
+  else if (Serial.read() == '1')
+  {
+    if(dead){
+      dead = false;
+      un_fade = true;
+    }
+#ifdef DEBUG
+    Serial.println("I read a 1 (Calm) ");
+#endif
+  }
+
+  // do a update every (pulse_update_period) 500ms
+  pulseAnimator->Update();
+
+  //do a fade effect for 600 ticks
+  if (start_fading)
+  {
+    if(potAnimator->FadeOut()){
+        Serial.println("potAnimator->FadeOut(); = true");
+        start_fading = false;
+        dead = true;
+    }
+  }
+  if (un_fade)
+  {
+    if(potAnimator->FadeIn()){
+        Serial.println("potAnimator->FadeIn(); = true");
+        un_fade = false;
+        dead = false;
+    }
   }
 }
