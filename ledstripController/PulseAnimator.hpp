@@ -15,10 +15,10 @@ private:
 
     //array needed for pulse left and PulseRight
     //we allow maximal 50 pulses & set all on -1
-    int pulseLeftArray[50];
-    int pulseRightArray[50];
-    int arraySizeLeft = 50;
-    int arraySizeRight = 50;
+    int pulseLeftArray[10];
+    int pulseRightArray[10];
+    int arraySizeLeft = 10;
+    int arraySizeRight = 10;
 
     // for desiding the pulse length
     long randNumber;
@@ -101,8 +101,7 @@ void PulseAnimator::Update()
             }
             else if (pulseLeftArray[i] >= 0)
             {
-                strip->SetPixel(i, 0, 0, 0);
-                strip->SetPixel((i + 1), 255, 0, 0);
+                strip->SetPixel(pulseLeftArray[i], 255, 0, 0);
                 pulseLeftArray[i] += 1;
             }
         }
@@ -132,7 +131,8 @@ void PulseAnimator::Update()
 #endif
 
         // Pulse right going down 1 if it's not stripsize + 1
-        for (int i = 0; i < arraySizeRight; i++)
+        for (int i = arraySizeRight - 1; i >= 0; i--)
+        // for (int i = 0; i < arraySizeRight; i++)
         {
             if (pulseRightArray[i] == 0)
             {
@@ -144,13 +144,14 @@ void PulseAnimator::Update()
             }
             else if (pulseRightArray[i] != -1)
             {
-                strip->SetPixel(i, 0, 0, 0);
-                strip->SetPixel((i - 1), 255, 0, 0);
+                strip->SetPixel((pulseRightArray[i]), 255, 0, 0);
+                Serial.println(i);
                 pulseRightArray[i] -= 1;
             }
         }
 
-        strip->Update(); //do stuff
+        strip->Update();
+        strip->ClearStrip();
     }
 }
 
@@ -175,8 +176,8 @@ void PulseAnimator::PulseLeft(int intensity)
         {
             if (pulseLeftArray[i] == -1)
             {
+                pulseLeftArray[i] = 0 + left_counter;
                 left_counter += 1;
-                pulseLeftArray[i] = 0;
 #ifdef DEBUG
                 Serial.print(i);
                 Serial.print(',');
@@ -216,8 +217,8 @@ void PulseAnimator::PulseRight(int intensity)
         {
             if (pulseRightArray[i] == -1)
             {
+                pulseRightArray[i] = stripSize + right_counter;
                 right_counter += 1;
-                pulseRightArray[i] = stripSize;
 #ifdef DEBUG
                 Serial.print(i);
                 Serial.print(',');

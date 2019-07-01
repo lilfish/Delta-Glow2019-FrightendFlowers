@@ -49,44 +49,44 @@ void PotAnimator::Update()
 
 bool PotAnimator::FadeEffect()
 {
-    if (millis() > fade_timer + 1)
-    {
-        fade_timer = millis();
-        fade_counter += 1;
-        float brightness = 0;
+    // if (millis() > fade_timer + 1)
+    // {
+    //     fade_timer = millis();
+    fade_counter += 1;
+    float brightness = 0;
 
-        if (fade_counter <= fade_speed / 2)
-        {
-            brightness = max_brightness - SinEasingFunction(fade_counter, 0, max_brightness, fade_speed);
-        }
-        else
-        {
-            brightness = SinEasingFunction(fade_counter, 0, max_brightness, fade_speed);
-        }
+    if (fade_counter <= fade_speed / 2)
+    {
+        brightness = max_brightness - SinEasingFunction(fade_counter, 0, max_brightness, fade_speed);
+    }
+    else
+    {
+        brightness = SinEasingFunction(fade_counter, 0, max_brightness, fade_speed);
+    }
 
 #ifdef DEBUG
-        Serial.println("fadeIn&out effect - Millis passed: ");
-        Serial.println(fade_counter);
-        Serial.print("Brightness is set to: ");
-        Serial.println(brightness);
+    Serial.println("fadeIn&out effect - Millis passed: ");
+    Serial.println(fade_counter);
+    Serial.print("Brightness is set to: ");
+    Serial.println(brightness);
 #endif
 
-        strip->SetBrightness(int(brightness));
+    strip->SetBrightness(int(brightness));
 
-        if (fade_counter == fade_speed)
-        {
-            fade_counter = 0;
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+    if (fade_counter == fade_speed)
+    {
+        fade_counter = 0;
+        return true;
     }
     else
     {
         return false;
     }
+    // }
+    // else
+    // {
+    //     return false;
+    // }
 }
 
 bool PotAnimator::FadeOut()
@@ -96,7 +96,7 @@ bool PotAnimator::FadeOut()
         fade_timer = millis();
         fade_counter += 1;
         float brightness = 0;
-        
+
         brightness = max_brightness - SinEasingFunction(fade_counter, 0, max_brightness, fade_speed);
 
 #ifdef DEBUG

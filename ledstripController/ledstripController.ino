@@ -1,4 +1,4 @@
-#define DEBUG
+// #define DEBUG
 
 #include "Enums.hpp"
 
@@ -10,7 +10,7 @@
 #define STRIP_SIZE 30
 #define STRIP_PIN 12
 
-const int pulseLedsSize = 60;
+const int pulseLedsSize = 10;
 const int pulseLedsPin = 10;
 const int potLeds1Size = 30;
 const int potLeds1Pin = 8;
