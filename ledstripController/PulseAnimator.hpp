@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Enums.hpp"
+#include "Color.hpp"
 
 #include "IAnimator.hpp"
 #include "ILedstrip.hpp"
@@ -32,6 +33,9 @@ public:
     ~PulseAnimator();
 
     void Update();
+    void TurnOffLeds();
+    void TurnOnLeds(int r, int g, int b);
+
     void PulseLeft(int intensity);
     void PulseRight(int intensity);
 };
@@ -101,7 +105,7 @@ void PulseAnimator::Update()
             }
             else if (pulseLeftArray[i] >= 0)
             {
-                strip->SetPixel(pulseLeftArray[i], 255, 0, 0);
+                strip->SetPixel(pulseLeftArray[i], myColorR, myColorG, mycolorB);
                 pulseLeftArray[i] += 1;
             }
         }
@@ -136,7 +140,7 @@ void PulseAnimator::Update()
         {
             if (pulseRightArray[i] == 0)
             {
-                strip->SetPixel(i, 0, 0, 0);
+                strip->SetPixel(i, neighborColorR, neighborColorG, neighborColorB);
                 pulseRightArray[i] = -1;
 #ifdef DEBUG
                 Serial.println("(RIGHT) Done playing a full strip right side");
@@ -235,4 +239,13 @@ void PulseAnimator::PulseRight(int intensity)
     Serial.print("Right counter: ");
     Serial.println(right_counter);
 #endif
+}
+
+void PulseAnimator::TurnOffLeds()
+{
+    strip->TurnOffLeds();
+}
+void PulseAnimator::TurnOnLeds(int r, int g, int b)
+{
+    strip->TurnOnLeds(r, g, b);
 }

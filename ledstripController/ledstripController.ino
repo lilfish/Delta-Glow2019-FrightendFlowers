@@ -1,6 +1,7 @@
 // #define DEBUG
 
 #include "Enums.hpp"
+#include "Color.hpp"
 
 #include "ILedstrip.hpp"
 #include "WS2812Strip.hpp"
@@ -48,6 +49,11 @@ void setup()
   pulseAnimator = new PulseAnimator(pulseStrip);
   potAnimator = new PotAnimator(potStrip1);
   potAnimator2 = new PotAnimator(potStrip2);
+
+  pulseAnimator->TurnOffLeds();
+  potAnimator->TurnOnLeds(myColorR, myColorG, mycolorB);
+  potAnimator2->TurnOnLeds(myColorR, myColorG, mycolorB);
+
 
   Serial.begin(9600);
 #ifdef DEBUG

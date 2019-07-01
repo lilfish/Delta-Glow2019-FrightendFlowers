@@ -24,6 +24,8 @@ public:
     ~PotAnimator();
 
     void Update();
+    void TurnOffLeds();
+    void TurnOnLeds(int r, int g, int b);
     bool FadeEffect();
     bool FadeOut();
     bool FadeIn();
@@ -155,6 +157,15 @@ bool PotAnimator::FadeIn()
     {
         return false;
     }
+}
+
+void PotAnimator::TurnOffLeds()
+{
+    strip->TurnOffLeds();
+}
+void PotAnimator::TurnOnLeds(int r, int g, int b)
+{
+    strip->TurnOnLeds(r, g, b);
 }
 
 float PotAnimator::SinEasingFunction(float t, float b, float c, float d)

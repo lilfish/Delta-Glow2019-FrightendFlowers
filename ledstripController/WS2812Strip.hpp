@@ -2,12 +2,6 @@
 #include "ILedstrip.hpp"
 #include <FastLED.h>
 #include <Arduino.h>
-#define LED_TYPE WS2812B
-#define COLOR_ORDER GRB
-#define BRIGHTNESS 34
-#define LED_PIN 7
-#define NUM_LEDS 60
-CRGB leds[NUM_LEDS];
 
 class WS2812Strip : public ILedstrip
 {
@@ -24,6 +18,8 @@ public:
     void SetPixel(int pos, uint8_t r, uint8_t g, uint8_t b);
     void SetBrightness(int brightness);
     void Update();
+    void TurnOffLeds();
+    void TurnOnLeds(int r, int g, int b);
 };
 
 WS2812Strip::WS2812Strip(CRGB *ledArray, int amountOfLeds, uint8_t brightness)
@@ -70,4 +66,16 @@ void WS2812Strip::Update()
 void WS2812Strip::SetBrightness(int brightness)
 {
     FastLED.setBrightness(brightness);
+}
+
+void WS2812Strip::TurnOffLeds()
+{
+    fill_solid(ledArray, amountOfLeds, CRGB::Black);
+    FastLED.show();
+}
+void WS2812Strip::TurnOnLeds(int r, int g, int b)
+{
+    fill_solid(ledArray, amountOfLeds, CRGB(r, g, b));
+    FastLED.show();
+
 }
