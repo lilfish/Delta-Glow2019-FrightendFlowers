@@ -60,19 +60,19 @@ void loop()
   if (Serial.read() == 'l')
   {
 #ifdef DEBUG
-    Serial.println("I read a l (Left pulse) ");
+    Serial.println("I read a r (Right pulse) ");
 #endif
     Serial.flush();
-    pulseAnimator->PulseLeft(255);
+    pulseAnimator->PulseRight();
   }
 
   if (Serial.read() == 'r')
   {
 #ifdef DEBUG
-    Serial.println("I read a r (Right pulse) ");
+    Serial.println("I read a l (Left pulse) ");
 #endif
     Serial.flush();
-    pulseAnimator->PulseRight(255);
+    pulseAnimator->PulseLeft();
   }
 
   if (Serial.read() == 'd')
@@ -108,5 +108,4 @@ void loop()
   pulseAnimator->Update();
   potAnimator->Update();
   potAnimator2->Update();
-
 }

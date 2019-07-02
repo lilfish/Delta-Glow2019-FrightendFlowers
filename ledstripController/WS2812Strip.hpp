@@ -40,6 +40,12 @@ int WS2812Strip::GetSize()
 
 void WS2812Strip::SetPixel(int pos, uint8_t r, uint8_t g, uint8_t b)
 {
+    //make sure that the pos is not out of range
+    if (pos == amountOfLeds)
+    {
+        pos -= 1;
+    }
+    //sed the color for that position
     ledArray[pos] = CRGB(r, g, b);
 #ifdef DEBUG
     Serial.print("Led array - " + String(r) + String(g) + String(b) + " : ");
@@ -48,8 +54,9 @@ void WS2812Strip::SetPixel(int pos, uint8_t r, uint8_t g, uint8_t b)
         Serial.print(ledArray[i]);
         Serial.print("  ");
     }
-    Serial.println(" --------- ");
-    delay(4);
+    Serial.print(" --------- ");
+    Serial.println(amountOfLeds);
+    delay(1);
 #endif
 }
 
@@ -77,5 +84,4 @@ void WS2812Strip::TurnOnLeds(int r, int g, int b)
 {
     fill_solid(ledArray, amountOfLeds, CRGB(r, g, b));
     FastLED.show();
-
 }

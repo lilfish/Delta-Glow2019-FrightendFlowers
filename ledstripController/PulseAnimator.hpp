@@ -36,8 +36,8 @@ public:
     void TurnOffLeds();
     void TurnOnLeds(int r, int g, int b);
 
-    void PulseLeft(int intensity);
-    void PulseRight(int intensity);
+    void PulseLeft();
+    void PulseRight();
 };
 
 PulseAnimator::PulseAnimator(ILedstrip *strip)
@@ -158,7 +158,7 @@ void PulseAnimator::Update()
     }
 }
 
-void PulseAnimator::PulseLeft(int intensity)
+void PulseAnimator::PulseLeft()
 {
     randNumber = random(1, 3);
 
@@ -194,7 +194,7 @@ void PulseAnimator::PulseLeft(int intensity)
 #endif
 }
 
-void PulseAnimator::PulseRight(int intensity)
+void PulseAnimator::PulseRight()
 {
     randNumber = random(1, 3);
 
