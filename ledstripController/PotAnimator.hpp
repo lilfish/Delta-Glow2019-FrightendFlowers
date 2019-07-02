@@ -13,13 +13,13 @@ private:
     int fadeEffect_counter = 0;
     int fadeIn_counter = 0;
     int fadeOut_counter = 0;
-    // fade speed = for fadeIn and fadeOut
+    // fade speed = the speed for fadeIn and fadeOut
     #ifdef DEBUG
     int fade_speed = 20;
     #else
     int fade_speed = 3000;
     #endif
-    // fade_effect_speed = for fadeEffect
+    // fade_effect_speed = the speed for PulseEffect
     #ifdef DEBUG
     int fade_effect_speed = 20;
     #else
@@ -28,7 +28,7 @@ private:
     float max_brightness = 255;
 
     // Private fade effect functions
-    void FadeEffect();
+    void PulseEffect();
     void FadeOut();
     void FadeIn();
 
@@ -50,7 +50,7 @@ public:
 
     void StartFadeIn();
     void StartFadeOut();
-    void PulseEffect();
+    void StartPulseEffect();
 };
 
 PotAnimator::PotAnimator(ILedstrip *strip)
@@ -68,15 +68,15 @@ void PotAnimator::Update()
 {
     FadeOut();
     FadeIn();
-    FadeEffect();
+    PulseEffect();
 }
 
-void PotAnimator::PulseEffect()
+void PotAnimator::StartPulseEffect()
 {
     StartFadeEffect_Bool = true;
 }
 
-void PotAnimator::FadeEffect()
+void PotAnimator::PulseEffect()
 {
     if(StartFadeEffect_Bool){
         

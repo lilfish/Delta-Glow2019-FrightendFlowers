@@ -96,8 +96,8 @@ void loop()
 
   if (Serial.read() == 'p')
   {
-    potAnimator->PulseEffect();
-    potAnimator2->PulseEffect();
+    potAnimator->StartPulseEffect();
+    potAnimator2->StartPulseEffect();
     Serial.flush();
 #ifdef DEBUG
     Serial.println("I read p (FadeEffect)");

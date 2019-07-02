@@ -15,7 +15,7 @@ private:
     States state = CALM;
 
     //array needed for pulse left and PulseRight
-    //we allow maximal 50 pulses & set all on -1
+    //we allow maximal 60 pulses & set all on -1
     int pulseLeftArray[60];
     int pulseRightArray[60];
     int arraySizeLeft = 60;
