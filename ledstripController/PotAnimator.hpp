@@ -9,15 +9,36 @@ private:
     int stripSize;
 
     unsigned long fade_timer = 0;
-    int fade_counter = 0;
+    //fade counters
+    int fadeEffect_counter = 0;
+    int fadeIn_counter = 0;
+    int fadeOut_counter = 0;
     // fade speed = for fadeIn and fadeOut
-    int fade_speed = 60;
+    #ifdef DEBUG
+    int fade_speed = 20;
+    #else
+    int fade_speed = 3000;
+    #endif
     // fade_effect_speed = for fadeEffect
-    int fade_effect_speed = 40;
-
+    #ifdef DEBUG
+    int fade_effect_speed = 20;
+    #else
+    int fade_effect_speed = 1000;
+    #endif
     float max_brightness = 255;
 
-    // virtual float easeIn() = 0;
+    // Private fade effect functions
+    void FadeEffect();
+    void FadeOut();
+    void FadeIn();
+
+    // Bools to check wether fade in or fade out effects are done
+    bool StartFadeIn_Bool = false;
+    bool StartFadeOut_Bool = false;
+    bool StartFadeEffect_Bool = false;
+    
+    // Easing function (penners formula)
+    float SinEasingFunction(float t, float b, float c, float d);
 
 public:
     PotAnimator(ILedstrip *strip);
@@ -26,11 +47,10 @@ public:
     void Update();
     void TurnOffLeds();
     void TurnOnLeds(int r, int g, int b);
-    bool FadeEffect();
-    bool FadeOut();
-    bool FadeIn();
 
-    float SinEasingFunction(float t, float b, float c, float d);
+    void StartFadeIn();
+    void StartFadeOut();
+    void PulseEffect();
 };
 
 PotAnimator::PotAnimator(ILedstrip *strip)
@@ -46,116 +66,111 @@ PotAnimator::~PotAnimator()
 
 void PotAnimator::Update()
 {
-    strip->Update();
+    FadeOut();
+    FadeIn();
+    FadeEffect();
 }
 
-bool PotAnimator::FadeEffect()
+void PotAnimator::PulseEffect()
 {
-    // if (millis() > fade_timer + 1)
-    // {
-    //     fade_timer = millis();
-    fade_counter += 1;
-    float brightness = 0;
-
-    if (fade_counter <= fade_speed / 2)
-    {
-        brightness = max_brightness - SinEasingFunction(fade_counter, 0, max_brightness, fade_speed);
-    }
-    else
-    {
-        brightness = SinEasingFunction(fade_counter, 0, max_brightness, fade_speed);
-    }
-
-#ifdef DEBUG
-    Serial.println("fadeIn&out effect - Millis passed: ");
-    Serial.println(fade_counter);
-    Serial.print("Brightness is set to: ");
-    Serial.println(brightness);
-#endif
-
-    strip->SetBrightness(int(brightness));
-
-    if (fade_counter == fade_speed)
-    {
-        fade_counter = 0;
-        return true;
-    }
-    else
-    {
-        return false;
-    }
-    // }
-    // else
-    // {
-    //     return false;
-    // }
+    StartFadeEffect_Bool = true;
 }
 
-bool PotAnimator::FadeOut()
+void PotAnimator::FadeEffect()
 {
-    if (millis() > fade_timer + 1)
-    {
-        fade_timer = millis();
-        fade_counter += 1;
+    if(StartFadeEffect_Bool){
+        
         float brightness = 0;
-
-        brightness = max_brightness - SinEasingFunction(fade_counter, 0, max_brightness, fade_speed);
-
-#ifdef DEBUG
-        Serial.println("Fade out effect - Millis passed: ");
-        Serial.println(fade_counter);
-        Serial.print("Brightness is set to: ");
-        Serial.println(brightness);
-#endif
-        strip->SetBrightness(int(brightness));
-
-        if (fade_counter == fade_speed)
+        if (fadeEffect_counter != fade_speed)
         {
-            fade_counter = 0;
-            return true;
+            fadeEffect_counter += 1;
+            if (fadeEffect_counter <= fade_speed / 2)
+            {
+                brightness = max_brightness - SinEasingFunction(fadeEffect_counter, 0, max_brightness, fade_effect_speed);
+            }
+            else
+            {
+                brightness = SinEasingFunction(fadeEffect_counter, 0, max_brightness, fade_effect_speed);
+            }
+
+    #ifdef DEBUG
+            Serial.println("fadeIn&out effect - counter:");
+            Serial.println(fadeEffect_counter);
+            Serial.print("Brightness is set to: ");
+            Serial.println(brightness);
+    #endif
+
+            strip->SetBrightness(int(brightness));
         }
         else
         {
-            return false;
+            fadeEffect_counter = 0;
+            StartFadeEffect_Bool = false;
         }
-    }
-    else
-    {
-        return false;
     }
 }
 
-bool PotAnimator::FadeIn()
+void PotAnimator::StartFadeOut()
 {
-    if (millis() > fade_timer + 1)
-    {
-        fade_timer = millis();
-        fade_counter += 1;
-        float brightness = 0;
+    StartFadeOut_Bool = true;
+}
 
-        brightness = SinEasingFunction(fade_counter, 0, max_brightness, fade_speed);
+void PotAnimator::FadeOut()
+{
+    if(StartFadeOut_Bool){
+        if (fadeOut_counter != fade_speed)
+        {
+            fadeOut_counter += 1;
+            float brightness = 0;
+
+            brightness = max_brightness - SinEasingFunction(fadeOut_counter, 0, max_brightness, fade_speed);
+
+    #ifdef DEBUG
+            Serial.println("Fade out effect - counter 2:");
+            Serial.println(fadeOut_counter);
+            Serial.print("Brightness is set to: ");
+            Serial.println(brightness);
+    #endif
+            strip->SetBrightness(int(brightness));
+        }
+        else if (fadeOut_counter >= fade_speed)
+        {
+            fadeOut_counter = 0;
+            StartFadeOut_Bool = false;
+        }
+    }
+}
+
+void PotAnimator::StartFadeIn()
+{
+    StartFadeIn_Bool = true;
+}
+
+void PotAnimator::FadeIn()
+{
+    if (StartFadeIn_Bool)
+    {
+
+        if (fadeIn_counter != fade_speed)
+        {
+            fadeIn_counter += 1;
+            float brightness = 0;
+
+            brightness = SinEasingFunction(fadeIn_counter, 0, max_brightness, fade_speed);
 
 #ifdef DEBUG
-        Serial.println("Fade in effect - Millis passed: ");
-        Serial.println(fade_counter);
-        Serial.print("Brightness is set to: ");
-        Serial.println(brightness);
+            Serial.print("Fade in effect - counter:");
+            Serial.println(fadeIn_counter);
+            Serial.print("Brightness is set to: ");
+            Serial.println(brightness);
 #endif
-        strip->SetBrightness(int(brightness));
-
-        if (fade_counter == fade_speed)
-        {
-            fade_counter = 0;
-            return true;
+            strip->SetBrightness(int(brightness));
         }
         else
         {
-            return false;
+            fadeIn_counter = 0;
+            StartFadeIn_Bool = false;
         }
-    }
-    else
-    {
-        return false;
     }
 }
 
@@ -163,6 +178,7 @@ void PotAnimator::TurnOffLeds()
 {
     strip->TurnOffLeds();
 }
+
 void PotAnimator::TurnOnLeds(int r, int g, int b)
 {
     strip->TurnOnLeds(r, g, b);

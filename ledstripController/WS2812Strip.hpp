@@ -27,7 +27,6 @@ WS2812Strip::WS2812Strip(CRGB *ledArray, int amountOfLeds, uint8_t brightness)
     this->ledArray = ledArray;
     this->amountOfLeds = amountOfLeds;
     FastLED.setBrightness(brightness);
-    // fill_solid( ledArray, amountOfLeds, CRGB::Red);
 }
 
 WS2812Strip::~WS2812Strip()
@@ -50,6 +49,7 @@ void WS2812Strip::SetPixel(int pos, uint8_t r, uint8_t g, uint8_t b)
         Serial.print("  ");
     }
     Serial.println(" --------- ");
+    delay(4);
 #endif
 }
 

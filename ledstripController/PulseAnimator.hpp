@@ -16,16 +16,16 @@ private:
 
     //array needed for pulse left and PulseRight
     //we allow maximal 50 pulses & set all on -1
-    int pulseLeftArray[10];
-    int pulseRightArray[10];
-    int arraySizeLeft = 10;
-    int arraySizeRight = 10;
+    int pulseLeftArray[60];
+    int pulseRightArray[60];
+    int arraySizeLeft = 60;
+    int arraySizeRight = 60;
 
     // for desiding the pulse length
     long randNumber;
 
     //milisecond timer
-    int pulse_update_period = 500;
+    int pulse_update_period = 50;
     unsigned long pulse_timer = 0;
 
 public:
@@ -67,7 +67,6 @@ void PulseAnimator::Update()
     {
         pulse_timer = millis();
 #ifdef DEBUG
-        Serial.println("Updating leds");
         boolean print_left = false;
         for (int i = 0; i < arraySizeLeft; i++)
         {
@@ -135,8 +134,8 @@ void PulseAnimator::Update()
 #endif
 
         // Pulse right going down 1 if it's not stripsize + 1
-        for (int i = arraySizeRight - 1; i >= 0; i--)
-        // for (int i = 0; i < arraySizeRight; i++)
+        // for (int i = arraySizeRight - 1; i >= 0; i--)
+        for (int i = 0; i < arraySizeRight; i++)
         {
             if (pulseRightArray[i] == 0)
             {
@@ -148,9 +147,9 @@ void PulseAnimator::Update()
             }
             else if (pulseRightArray[i] != -1)
             {
-                strip->SetPixel((pulseRightArray[i]), 255, 0, 0);
-                Serial.println(i);
+                strip->SetPixel((pulseRightArray[i]), neighborColorR, neighborColorG, neighborColorB);
                 pulseRightArray[i] -= 1;
+                delay(1);
             }
         }
 
@@ -168,7 +167,6 @@ void PulseAnimator::PulseLeft(int intensity)
     Serial.println(randNumber);
 #endif
 
-    bool left_done = false;
     int left_counter = 0;
 
 #ifdef DEBUG
@@ -176,7 +174,7 @@ void PulseAnimator::PulseLeft(int intensity)
 #endif
     for (size_t i = 0; i < arraySizeLeft; i++)
     {
-        if (!left_done)
+        if (left_counter != randNumber)
         {
             if (pulseLeftArray[i] == -1)
             {
@@ -186,10 +184,6 @@ void PulseAnimator::PulseLeft(int intensity)
                 Serial.print(i);
                 Serial.print(',');
 #endif
-                if (left_counter == randNumber)
-                {
-                    left_done = true;
-                }
             }
         }
     }
@@ -217,20 +211,16 @@ void PulseAnimator::PulseRight(int intensity)
 #endif
     for (size_t i = 0; i < arraySizeRight; i++)
     {
-        if (!right_done)
+        if (right_counter != randNumber)
         {
             if (pulseRightArray[i] == -1)
             {
-                pulseRightArray[i] = stripSize + right_counter;
+                pulseRightArray[i] = stripSize - right_counter;
                 right_counter += 1;
 #ifdef DEBUG
                 Serial.print(i);
                 Serial.print(',');
 #endif
-                if (right_counter == randNumber)
-                {
-                    right_done = true;
-                }
             }
         }
     }
