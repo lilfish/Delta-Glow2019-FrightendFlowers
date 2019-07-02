@@ -6,6 +6,9 @@
 #include "IAnimator.hpp"
 #include "ILedstrip.hpp"
 
+// information about this class and its functions can be found here:
+// https://git.fhict.nl/I393504/glow-2019/wikis/%5BPROGRAMMING%5D-How-Pulses-Work
+
 class PulseAnimator : IAnimator
 {
 private:

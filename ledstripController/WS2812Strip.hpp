@@ -3,6 +3,9 @@
 #include <FastLED.h>
 #include <Arduino.h>
 
+// information about this class and its functions can be found here:
+// https://git.fhict.nl/I393504/glow-2019/wikis/%5BPROGRAMMING%5D-How-The-WS2812Strip-Class-Works
+
 class WS2812Strip : public ILedstrip
 {
 private:
